@@ -48,8 +48,8 @@ resource "aws_route_table" "route" {
 
 # link the public subnet ,gateway and route table
 resource "aws_route_table_association" "route-record-a" {
-    for_each = var.public_subnets
-    subnet_id      = aws_subnet.public_subnet.id
+    for_each = aws_subnet.public_subnet
+    subnet_id      = each.value.id
     route_table_id = aws_route_table.route.id
 }
 
