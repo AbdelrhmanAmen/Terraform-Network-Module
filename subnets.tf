@@ -57,3 +57,12 @@ resource "aws_route_table_association" "route-record-b" {
     gateway_id     = aws_internet_gateway.gateway.id
     route_table_id = aws_route_table.route.id
 }
+
+# create a subnet group for RDS db subnet
+resource "aws_db_subnet_group" "db_group" {
+    name       = "db-group"
+    subnet_ids = [for subnet in aws_subnet.private_subnet : subnet.id]
+    tags = {
+        Name = "db-subnet-${var.author}"
+    }
+}
