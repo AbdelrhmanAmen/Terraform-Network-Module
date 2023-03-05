@@ -1,7 +1,9 @@
+# fetch vpc information
 data "aws_vpc" "vpc" {
     id = var.vpc
 }
 
+# create 2 private subnets using foreach 
 resource "aws_subnet" "private_subnet" {
     for_each = var.private_subnets
 
@@ -14,6 +16,7 @@ resource "aws_subnet" "private_subnet" {
     }
 }
 
+#  create one public subnet, foreach is for future addition
 resource "aws_subnet" "public_subnet" {
     for_each = var.public_subnets
 
@@ -26,6 +29,7 @@ resource "aws_subnet" "public_subnet" {
     }
 }
 
+# create an internet gatway in the vpc
 resource "aws_internet_gateway" "gateway" {
     vpc_id = data.aws_vpc.vpc.id
     tags = {
@@ -33,6 +37,7 @@ resource "aws_internet_gateway" "gateway" {
     }
 }
 
+# create a route table
 resource "aws_route_table" "route" {
     vpc_id = data.aws_vpc.vpc.id
 
@@ -41,10 +46,8 @@ resource "aws_route_table" "route" {
     }
 }
 
+# link the public subnet ,gateway and route table
 resource "aws_route_table_association" "route-record-a" {
-    depends_on = [
-        aws_subnet.public_subnets
-    ]
     for_each = var.public_subnets
     subnet_id      = aws_subnet.public_subnet.id
     route_table_id = aws_route_table.route.id

@@ -1,8 +1,7 @@
 variable "vpc" {
-    description = "availability zone"
+    description = "vpc id"
     type = string 
 }
-
 
 variable "private_subnets" {
     type = map
